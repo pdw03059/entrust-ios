@@ -1,0 +1,7 @@
+# CI 에서 만들어지는 것들
+EntrustApp.xcodeproj/
+Plists/
+build/
+out/
+Payload/
+*/Assets.xcassets/AppIcon.appiconset/icon-1024.png

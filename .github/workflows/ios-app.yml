@@ -6,7 +6,7 @@ name: iOS 체험 앱 빌드
 on:
   workflow_dispatch:
   push:
-    branches: [app/dev]
+    branches: [app/dev, main, "claude/**"]
     paths:
       - 'packaging/ios/EntrustApp/**'
       - '.github/workflows/ios-app.yml'
