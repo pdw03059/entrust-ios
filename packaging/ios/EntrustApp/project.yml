@@ -1,0 +1,78 @@
+# XcodeGen 설정 — 맥(또는 GitHub 의 클라우드 맥)에서 `xcodegen generate` 하면 EntrustApp.xcodeproj 가 생긴다.
+# 앱 3개: ENTRUST(관객) · 티콧24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표). Shared/ 는 셋이 함께 씀.
+name: EntrustApp
+options:
+  bundleIdPrefix: kr.co.synapseai
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    MARKETING_VERSION: "0.2"
+    CURRENT_PROJECT_VERSION: "2"
+    TARGETED_DEVICE_FAMILY: "1"
+    SWIFT_VERSION: "5.0"
+    GENERATE_INFOPLIST_FILE: NO
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+targets:
+  EntrustApp:
+    type: application
+    platform: iOS
+    sources: [Sources, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: kr.co.synapseai.entrust.demo
+    info:
+      path: Plists/EntrustApp-Info.plist
+      properties:
+        CFBundleDisplayName: ENTRUST
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSFaceIDUsageDescription: 표를 이 아이폰에 잠그고 입장 QR을 열 때 얼굴을 확인합니다.
+        NSLocationWhenInUseUsageDescription: 공연장 근처에서만 입장 QR을 열기 위해 위치를 확인합니다. 위치는 폰 밖으로 보내지 않습니다.
+        LSApplicationQueriesSchemes: [ticket24, entrustadmin]
+        CFBundleURLTypes:
+          - CFBundleURLName: kr.co.synapseai.entrust
+            CFBundleURLSchemes: [entrust]
+  Ticket24:
+    type: application
+    platform: iOS
+    sources: [Shop, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: kr.co.synapseai.ticket24.demo
+    info:
+      path: Plists/Ticket24-Info.plist
+      properties:
+        CFBundleDisplayName: 티콧24
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSLocationWhenInUseUsageDescription: 공연장 위치 안내에 씁니다.
+        LSApplicationQueriesSchemes: [entrust, entrustadmin]
+        CFBundleURLTypes:
+          - CFBundleURLName: kr.co.synapseai.ticket24
+            CFBundleURLSchemes: [ticket24]
+  EntrustAdmin:
+    type: application
+    platform: iOS
+    sources: [Admin, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: kr.co.synapseai.entrust.admin.demo
+    info:
+      path: Plists/EntrustAdmin-Info.plist
+      properties:
+        CFBundleDisplayName: ENTRUST 관리자
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSCameraUsageDescription: 입장 QR · 표 등록 QR을 읽기 위해 카메라를 씁니다.
+        NSLocationWhenInUseUsageDescription: 지금 위치를 공연장으로 정할 때 씁니다.
+        LSApplicationQueriesSchemes: [ticket24, entrust]
+        CFBundleURLTypes:
+          - CFBundleURLName: kr.co.synapseai.entrust.admin
+            CFBundleURLSchemes: [entrustadmin]
