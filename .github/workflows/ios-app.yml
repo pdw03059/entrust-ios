@@ -14,8 +14,8 @@ permissions:
   contents: read
 jobs:
   build:
-    # macos-14 실행기는 배정되지 않고 즉시 취소됨(2026-11 확인) → macos-15
-    runs-on: macos-15
+    # macos-14 이미지는 2026-11-02 GitHub 에서 폐기됨(작업이 즉시 취소) → 최신 macOS 이미지 사용
+    runs-on: macos-26
     timeout-minutes: 40
     defaults:
       run:
