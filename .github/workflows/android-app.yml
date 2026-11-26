@@ -1,0 +1,64 @@
+# ENTRUST 안드로이드 체험 앱 3개(.apk) 만들기 — GitHub 리눅스 실행기에서 빌드.
+#   ENTRUST(관객) · 티콧24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표)
+# 결과물: 이 실행 화면 아래 'Artifacts' 의 EntrustApps-apk → 안드로이드 폰에서 파일을 눌러 설치.
+# 서명: 저장소 비밀값 ANDROID_KEYSTORE_B64 · ANDROID_KS_PASS · ANDROID_KEY_ALIAS · ANDROID_KEY_PASS 가 있으면 그 열쇠,
+#       없으면 실행할 때마다 새로 생기는 시험용(debug) 열쇠 → 이때는 새 판을 깔기 전에 이전 앱을 지워야 함.
+name: Android 체험 앱 빌드
+on:
+  workflow_dispatch:
+  push:
+    branches: [app/dev, main, "claude/**"]
+    paths:
+      - 'packaging/android/EntrustApp/**'
+      - '.github/workflows/android-app.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: packaging/android/EntrustApp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+      - name: 공통 형식 · 검표 시험(core)
+        run: gradle :core:test --console=plain
+      - name: 서명 열쇠 준비(비밀값이 있을 때만)
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/entrust.jks"
+            echo "ENTRUST_KEYSTORE=$RUNNER_TEMP/entrust.jks" >> "$GITHUB_ENV"
+            echo "정식 체험 열쇠로 서명합니다"
+          else
+            echo "::notice::비밀값이 없어 시험용 열쇠로 서명합니다(새 판 설치 전 이전 앱 삭제 필요)"
+          fi
+      - name: 빌드(APK 3개)
+        env:
+          ENTRUST_KS_PASS: ${{ secrets.ANDROID_KS_PASS }}
+          ENTRUST_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ENTRUST_KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
+        run: gradle assembleRelease --console=plain
+      - name: 이름 붙여 모으기 · 서명 확인
+        run: |
+          mkdir -p out
+          cp app-entrust/build/outputs/apk/release/app-entrust-release.apk out/ENTRUST.apk
+          cp app-ticket24/build/outputs/apk/release/app-ticket24-release.apk out/Ticket24.apk
+          cp app-admin/build/outputs/apk/release/app-admin-release.apk out/EntrustAdmin.apk
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          for f in out/*.apk; do echo "== $f"; "$BT/apksigner" verify --print-certs "$f" | grep -E "Signer #1 certificate (DN|SHA-256)"; done
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EntrustApps-apk
+          path: packaging/android/EntrustApp/out/*.apk
+          retention-days: 30
