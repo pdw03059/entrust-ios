@@ -1,4 +1,4 @@
-// ENTRUST 아이폰 앱(관객): 티콧24에서 산 표 받기 → 보안 칩 열쇠로 Face ID 잠금 → 검표기(관리자 앱) 등록
+// ENTRUST 아이폰 앱(관객): 티켓24에서 산 표 받기 → 보안 칩 열쇠로 Face ID 잠금 → 검표기(관리자 앱) 등록
 // → 공연장 반경 안(실제 GPS · 조작 위치 거절) · 입장 시간 안에서만 10초마다 바뀌는 입장 QR.
 import SwiftUI
 import UIKit
@@ -79,7 +79,7 @@ final class AppModel: ObservableObject {
         } catch Entrust.OpenError.badShopSig {
             notice = "예매처 서명이 맞지 않아요(표 내용이 바뀌었어요)."
         } catch {
-            notice = "예매처 표 코드를 읽을 수 없어요. 티콧24에서 다시 보내 주세요."
+            notice = "예매처 표 코드를 읽을 수 없어요. 티켓24에서 다시 보내 주세요."
         }
     }
 
@@ -253,13 +253,13 @@ struct ReceiveView: View {
     @State private var manual = ""
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("티콧24에서 산 표를 받아요").font(.system(size: 28, weight: .heavy))
+            Text("티켓24에서 산 표를 받아요").font(.system(size: 28, weight: .heavy))
             Text("예매처가 서명한 표만 받아요. 공연 장소 · 입장 시간은 관리자가 정하고, 이 앱에서는 바꿀 수 없어요.")
                 .font(.subheadline).foregroundColor(.muted)
-            PrimaryButton(title: "티콧24 열기") {
+            PrimaryButton(title: "티켓24 열기") {
                 if let u = URL(string: "ticket24://home") { openURL(u) }
             }
-            Text("티콧24에서 예매 후 'ENTRUST로 표 보내기'를 누르면 이 앱으로 바로 들어와요.").font(.footnote).foregroundColor(.muted)
+            Text("티켓24에서 예매 후 'ENTRUST로 표 보내기'를 누르면 이 앱으로 바로 들어와요.").font(.footnote).foregroundColor(.muted)
             GhostButton(title: "표 코드 붙여 넣기") { model.receive(UIPasteboard.general.string ?? "") }
             TextField("ET1.… 직접 넣기", text: $manual, axis: .vertical)
                 .textInputAutocapitalization(.never).autocorrectionDisabled()

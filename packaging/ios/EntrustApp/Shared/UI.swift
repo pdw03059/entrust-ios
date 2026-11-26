@@ -1,4 +1,4 @@
-// 세 앱(ENTRUST · 티콧24 · 관리자)이 함께 쓰는 색 · 글자 · 버튼 · 카드 · QR 그림.
+// 세 앱(ENTRUST · 티켓24 · 관리자)이 함께 쓰는 색 · 글자 · 버튼 · 카드 · QR 그림.
 // 색은 디자인 기준(탑승권): 종이색 바탕 · 파랑 한 가지 · 초록(통과) · 빨강(거절).
 import SwiftUI
 import UIKit
@@ -107,8 +107,8 @@ struct TicketCard: View {
                 InfoCell(k: "입구", v: t.gate)
                 InfoCell(k: "좌석", v: t.seat)
                 InfoCell(k: "인원", v: "\(t.qty)명")
-                InfoCell(k: "입장 열림", v: clock(t.from))
-                InfoCell(k: "입장 닫힘", v: clock(t.to))
+                InfoCell(k: "입장 시작", v: clock(t.from))
+                InfoCell(k: "입장 마감", v: clock(t.to))
                 InfoCell(k: "반경", v: meters(Int(t.r)))
             }
         }

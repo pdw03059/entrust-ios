@@ -1,5 +1,5 @@
 # ENTRUST 아이폰 체험 앱 3개(.ipa) 만들기 — GitHub 의 클라우드 맥에서 빌드(서명 없음).
-#   ENTRUST(관객) · 티콧24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표)
+#   ENTRUST(관객) · 티켓24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표)
 # 결과물: 이 실행 화면 아래 'Artifacts' 의 EntrustApps-ipa → 윈도우 PC 의 Sideloadly 로 무료 애플 ID 서명 · 아이폰 설치.
 # 비밀값 · 인증서는 쓰지 않는다(서명은 사용자 PC 에서).
 name: iOS 체험 앱 빌드

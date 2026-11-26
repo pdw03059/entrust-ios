@@ -59,6 +59,6 @@ enum EntrustBridge {
     }
 
     /// ④ 처음 한 번: 검표기(ENTRUST 관리자)에 이 예매처의 공개 열쇠 등록(ES1)
-    static func registrationCode() -> String { Entrust.shopQr(name: "티콧24", pk: signingKey().publicKey.x963Representation) }
+    static func registrationCode() -> String { Entrust.shopQr(name: "티켓24", pk: signingKey().publicKey.x963Representation) }
     static func registrationURL() -> URL? { URL(string: "entrustadmin://shop#k=" + Entrust.urlValue(registrationCode())) }
 }

@@ -199,7 +199,7 @@ struct EntrySession {
     }
 }
 
-/* ───── 예매처(티콧24) · 관리자 앱이 함께 쓰는 것 ───── */
+/* ───── 예매처(티켓24) · 관리자 앱이 함께 쓰는 것 ───── */
 extension Entrust {
     /// 예매처 공개 열쇠(65바이트) → 짧은 이름(지문 8바이트) — 웹 shopId 와 같음
     static func shopId(_ raw65: Data) -> String { B64U.encode(Data(SHA256.hash(data: raw65)).prefix(8)) }
@@ -260,7 +260,7 @@ extension Entrust {
     }
 }
 
-/// 관리자 앱이 정하는 공연(장소 · 반경 · 입장 시간 · 입구) — 티콧24로 넘겨 표에 그대로 들어감
+/// 관리자 앱이 정하는 공연(장소 · 반경 · 입장 시간 · 입구) — 티켓24로 넘겨 표에 그대로 들어감
 struct ShowEvent: Codable, Identifiable, Equatable {
     var id: String
     var show: String

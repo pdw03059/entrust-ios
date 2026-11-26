@@ -1,4 +1,4 @@
-// 티콧24 — 시험용 가상 예매처 앱. 실제 예매처 앱(공연 · 교통 예매)의 흔한 흐름을 그대로 따른다:
+// 티켓24 — 시험용 가상 예매처 앱. 실제 예매처 앱(공연 · 교통 예매)의 흔한 흐름을 그대로 따른다:
 //   홈(배너 · 분류 · 목록) → 상품 상세(공연정보 · 판매정보) → 예매(① 회차 ② 좌석 ③ 결제) → 예매 완료(모바일 티켓) → 예매확인 · 취소
 // ENTRUST 를 아는 곳은 EntrustBridge.swift 하나뿐(실제 고객사 앱에 붙일 때 그 파일만 옮김).
 // 결제 · 회원 · 개인정보는 없다(가상 결제).
@@ -6,7 +6,7 @@ import SwiftUI
 import UIKit
 
 extension Color {
-    static let t24 = Color(red: 0xEE / 255, green: 0x2E / 255, blue: 0x3A / 255)      // 티콧24 브랜드
+    static let t24 = Color(red: 0xEE / 255, green: 0x2E / 255, blue: 0x3A / 255)      // 티켓24 브랜드
     static let t24Soft = Color(red: 0xFD / 255, green: 0xEC / 255, blue: 0xED / 255)
     static let line = Color.black.opacity(0.08)
     static let bg24 = Color(red: 0xF6 / 255, green: 0xF6 / 255, blue: 0xF8 / 255)
@@ -58,7 +58,7 @@ final class ShopStore: ObservableObject {
         if let d = UserDefaults.standard.data(forKey: key), let s = try? JSONDecoder().decode(Saved.self, from: d) {
             events = s.events; orders = s.orders; sold = s.sold; seq = s.seq
         }
-        if events.isEmpty { events = [ShowEvent.demo()] }
+        events.removeAll { $0.id == "ev_demo" } // 예전 판이 넣던 체험 공연(반경 200m · 항상 열림)은 지움 — 관리자가 보낸 공연만 판다
     }
 
     private func save() {
@@ -69,10 +69,15 @@ final class ShopStore: ObservableObject {
     /// ENTRUST 관리자 앱이 보낸 공연(ticket24://event#e=…)
     func handle(_ url: URL) {
         guard let e = Entrust.urlParam(url, "e").flatMap(ShowEvent.decode) else { return }
+        let prev = events.first { $0.id == e.id }
         events.removeAll { $0.id == e.id || $0.id == "ev_demo" }
         events.insert(e, at: 0)
         tab = 0
-        toast = "관리자 앱에서 공연을 받았어요: \(e.show)"
+        let changed = prev.map { $0.lat != e.lat || $0.lon != e.lon || $0.r != e.r || $0.from != e.from || $0.to != e.to || $0.gate != e.gate } ?? false
+        let hasSold = orders.contains { $0.eventId == e.id && $0.status != .cancelled }
+        toast = changed && hasSold
+            ? "공연 조건이 바뀌었어요(\(meters(e.r)) · \(clock(e.from))부터). 이미 산 표는 예전 조건 그대로라 새로 예매해야 새 조건이 들어가요."
+            : "관리자 앱에서 공연을 받았어요: \(e.show)"
         save()
     }
 
@@ -206,7 +211,7 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("티콧24").font(.system(size: 26, weight: .black)).foregroundColor(.t24)
+                    Text("티켓24").font(.system(size: 26, weight: .black)).foregroundColor(.t24)
                     Text("TICKET").font(.system(size: 11, weight: .bold)).foregroundColor(.muted)
                     Spacer()
                     Badge(text: "시험용", color: .muted)
@@ -239,7 +244,8 @@ struct HomeView: View {
 
                 Text("지금 예매 가능").font(.system(size: 20, weight: .heavy))
                 if list.isEmpty {
-                    Text("조건에 맞는 공연이 없어요.").foregroundColor(.muted).frame(maxWidth: .infinity, minHeight: 80)
+                    Text(store.events.isEmpty ? "아직 판매 중인 공연이 없어요.\nENTRUST 관리자 앱에서 공연을 만들고 '저장하고 티켓24로 보내기'를 눌러 주세요." : "조건에 맞는 공연이 없어요.")
+                        .multilineTextAlignment(.center).foregroundColor(.muted).frame(maxWidth: .infinity, minHeight: 80)
                 }
                 ForEach(Array(list.enumerated()), id: \.element.id) { i, e in
                     NavigationLink { ShowDetailView(e: e) } label: {
@@ -262,7 +268,7 @@ struct HomeView: View {
                     .buttonStyle(.plain)
                     Divider()
                 }
-                Text("공연은 ENTRUST 관리자 앱에서 만들어 '티콧24로 보내기'를 누르면 여기에 올라와요.")
+                Text("공연은 ENTRUST 관리자 앱에서 만들어 '티켓24로 보내기'를 누르면 여기에 올라와요.")
                     .font(.footnote).foregroundColor(.muted)
             }
             .padding(16)
@@ -674,7 +680,7 @@ struct PartnerView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text("ENTRUST 연동").font(.system(size: 26, weight: .heavy))
-                Text("티콧24가 판 표만 검표기에서 통과하도록, 처음 한 번 이 예매처를 ENTRUST 관리자(검표) 앱에 등록해요.")
+                Text("티켓24가 판 표만 검표기에서 통과하도록, 처음 한 번 이 예매처를 ENTRUST 관리자(검표) 앱에 등록해요.")
                     .font(.subheadline).foregroundColor(.muted)
                 PrimaryButton(title: "관리자 앱에 등록(같은 아이폰)", color: .t24) {
                     if let u = EntrustBridge.registrationURL() { openURL(u) }

@@ -1,4 +1,4 @@
-// ENTRUST 관리자 앱(주최 · 운영자): ① 공연 만들기 — 입장 QR이 열릴 장소(실제 GPS) · 반경 · 시간 · 입구 → 티콧24로 보내기
+// ENTRUST 관리자 앱(주최 · 운영자): ① 공연 만들기 — 입장 QR이 열릴 장소(실제 GPS) · 반경 · 시간 · 입구 → 티켓24로 보내기
 // ② 검표 — 카메라로 예매처 등록(ES1) · 표 등록(EL2) · 입장 QR(EQ2) · 취소 알림(EC1)을 읽고 판정
 // ③ 현황 — 등록된 예매처 · 표 · 입장 · 취소
 import SwiftUI
@@ -170,7 +170,7 @@ struct EventsView: View {
     var body: some View {
         List {
             Section {
-                Text("입장 QR이 열릴 장소(GPS) · 반경 · 시간을 정하고 티콧24로 보내요. 티콧24에서 산 표에 이 조건이 서명되어 들어가요.")
+                Text("입장 QR이 열릴 장소(GPS) · 반경 · 시간을 정하고 티켓24로 보내요. 티켓24에서 산 표에 이 조건이 서명되어 들어가요.")
                     .font(.footnote).foregroundColor(.muted)
             }
             if store.events.isEmpty {
@@ -183,7 +183,7 @@ struct EventsView: View {
                     Text("입장 \(clock(e.from)) ~ \(clock(e.to))").font(.footnote).foregroundColor(.muted).monospacedDigit()
                     HStack {
                         Button("수정") { editing = e }.buttonStyle(.bordered)
-                        Button("티콧24로 보내기") { if let u = AdminStore.shopURL(e) { openURL(u) } }.buttonStyle(.borderedProminent)
+                        Button("티켓24로 보내기") { if let u = AdminStore.shopURL(e) { openURL(u) } }.buttonStyle(.borderedProminent)
                     }
                     .font(.subheadline)
                 }
@@ -271,8 +271,8 @@ struct EventEditor: View {
                     Text("관객 폰이 이 지점에서 반경 안에 있을 때만 입장 QR이 열려요(GPS 오차 50m까지 봐줌).")
                 }
                 Section {
-                    DatePicker("열림", selection: $from)
-                    DatePicker("닫힘", selection: $to)
+                    DatePicker("입장 시작", selection: $from)
+                    DatePicker("입장 마감", selection: $to)
                     HStack {
                         quick("지금", 0)
                         quick("2분 뒤", 2)
@@ -287,7 +287,7 @@ struct EventEditor: View {
                 if !error.isEmpty { Text(error).foregroundColor(.badRed) }
                 Section {
                     Button("저장") { if let e = build() { store.upsert(e); dismiss() } }
-                    Button("저장하고 티콧24로 보내기") {
+                    Button("저장하고 티켓24로 보내기") {
                         if let e = build() {
                             store.upsert(e)
                             if let u = AdminStore.shopURL(e) { openURL(u) }
@@ -336,7 +336,7 @@ struct EventEditor: View {
         error = ""
         guard let c = coord else { error = "위치(위도 · 경도)를 확인해 주세요."; return nil }
         let f = Int(from.timeIntervalSince1970), t = Int(to.timeIntervalSince1970)
-        guard t > f else { error = "닫힘은 열림보다 뒤여야 해요."; return nil }
+        guard t > f else { error = "입장 마감은 입장 시작보다 뒤여야 해요."; return nil }
         guard t - f <= 7 * 24 * 3600 else { error = "입장 시간은 7일 안으로 정해 주세요."; return nil }
         let name = show.trimmingCharacters(in: .whitespaces)
         return ShowEvent(id: original.id, show: String((name.isEmpty ? "새 공연" : name).prefix(60)),
@@ -385,7 +385,7 @@ struct GateView: View {
                     stat("입장", store.entered.count)
                     stat("취소", store.cancelled.count)
                 }
-                Text("읽는 것: 예매처 등록(티콧24 '연동') · 표 등록(ENTRUST) · 입장 QR · 취소 알림. 같은 아이폰의 앱에서 넘긴 것도 여기서 판정해요.")
+                Text("읽는 것: 예매처 등록(티켓24 '연동') · 표 등록(ENTRUST) · 입장 QR · 취소 알림. 같은 아이폰의 앱에서 넘긴 것도 여기서 판정해요.")
                     .font(.footnote).foregroundColor(.muted)
                 ForEach(Array(store.log.suffix(10).reversed())) { l in
                     HStack(alignment: .top) {
@@ -424,7 +424,7 @@ struct StatusView: View {
     var body: some View {
         List {
             Section("등록된 예매처") {
-                if store.shops.isEmpty { Text("없음 — 티콧24 › ENTRUST 연동 › '관리자 앱에 등록'").foregroundColor(.muted) }
+                if store.shops.isEmpty { Text("없음 — 티켓24 › ENTRUST 연동 › '관리자 앱에 등록'").foregroundColor(.muted) }
                 ForEach(Array(store.shops.values)) { s in
                     VStack(alignment: .leading) { Text(s.name).font(.headline); Text("지문 \(s.id)").font(.caption).foregroundColor(.muted) }
                 }

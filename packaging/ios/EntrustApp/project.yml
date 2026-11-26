@@ -1,5 +1,5 @@
 # XcodeGen 설정 — 맥(또는 GitHub 의 클라우드 맥)에서 `xcodegen generate` 하면 EntrustApp.xcodeproj 가 생긴다.
-# 앱 3개: ENTRUST(관객) · 티콧24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표). Shared/ 는 셋이 함께 씀.
+# 앱 3개: ENTRUST(관객) · 티켓24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표). Shared/ 는 셋이 함께 씀.
 name: EntrustApp
 options:
   bundleIdPrefix: kr.co.synapseai
@@ -45,7 +45,7 @@ targets:
     info:
       path: Plists/Ticket24-Info.plist
       properties:
-        CFBundleDisplayName: 티콧24
+        CFBundleDisplayName: 티켓24
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}

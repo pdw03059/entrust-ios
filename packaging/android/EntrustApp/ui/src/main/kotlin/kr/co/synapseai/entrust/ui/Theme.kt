@@ -139,7 +139,7 @@ fun TicketCard(t: Terms) {
         Text(t.show, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
         Text("예매번호 ${t.no} · ${t.venue}", fontSize = 13.sp, color = Palette.muted)
         HorizontalDivider()
-        val cells = listOf("입구" to t.gate, "좌석" to t.seat, "인원" to "${t.qty}명", "입장 열림" to clock(t.from), "입장 닫힘" to clock(t.to), "반경" to meters(t.r.toInt()))
+        val cells = listOf("입구" to t.gate, "좌석" to t.seat, "인원" to "${t.qty}명", "입장 시작" to clock(t.from), "입장 마감" to clock(t.to), "반경" to meters(t.r.toInt()))
         cells.chunked(3).forEach { row ->
             Row(Modifier.fillMaxWidth()) { row.forEach { (k, v) -> InfoCell(k, v, Modifier.weight(1f)) } }
         }
