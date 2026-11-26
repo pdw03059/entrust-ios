@@ -151,6 +151,7 @@ final class AppModel: ObservableObject {
 
     func openQr(placeOK: Bool) {
         guard let t = ticket, placeOK, timeState().ok, !busy else { return }
+        if UIScreen.main.isCaptured { notice = "화면 녹화 · 화면 공유 · 미러링 중에는 입장 QR을 열 수 없어요."; return }
         notice = ""
         busy = true
         let ck = t.terms.ck
@@ -179,6 +180,7 @@ final class AppModel: ObservableObject {
         guard let t = ticket, let s = session else { return }
         let bl = Entrust.bioTTL - (now - s.bts)
         if bl <= 0 { closeQr(); return } // 30초가 지나면 다시 얼굴 확인
+        if UIScreen.main.isCaptured { closeQr("화면 녹화 · 화면 공유가 감지돼 QR을 닫았어요."); return }
         if !timeState().ok { closeQr("입장 시간이 끝나 QR을 닫았어요."); return }
         if !placeOK { closeQr("공연장 반경을 벗어나 QR을 닫았어요."); return }
         if force || now - lastQrAt >= Entrust.entryTTL {
@@ -243,6 +245,13 @@ struct ContentView: View {
         .tint(.accentBlue)
         .onChange(of: phase) { p in
             if p != .active { model.closeQr() } // 화면을 떠나면 QR을 닫고 다시 얼굴 확인
+        }
+        // 아이폰은 캡처 자체를 막을 수 없어 감지 즉시 QR을 닫는다(캡처한 QR은 10초 뒤 검표에서 거절)
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.userDidTakeScreenshotNotification)) { _ in
+            if model.session != nil { model.closeQr("화면 캡처가 감지돼 QR을 닫았어요. 캡처한 QR은 10초가 지나면 검표에서 거절돼요.") }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIScreen.capturedDidChangeNotification)) { _ in
+            if UIScreen.main.isCaptured && model.session != nil { model.closeQr("화면 녹화 · 화면 공유가 감지돼 QR을 닫았어요.") }
         }
     }
 }
@@ -343,7 +352,7 @@ struct EntryView: View {
                 .frame(maxWidth: .infinity)
             }
             TicketCard(t: t.terms)
-            Text("이 앱의 열쇠는 아이폰 보안 칩 안에만 있어 다른 기기로 복사되지 않고, 기기 암호로는 열리지 않아요. 위치 조작 앱으로 꾸민 위치는 거절해요.")
+            Text("이 앱의 열쇠는 아이폰 보안 칩 안에만 있어 다른 기기로 복사되지 않고, 기기 암호로는 열리지 않아요. 위치 조작 앱으로 꾸민 위치는 거절하고, 화면 캡처 · 녹화 · 공유가 감지되면 QR을 바로 닫아요.")
                 .font(.footnote).foregroundColor(.muted)
         }
         .onAppear { loc.start() }

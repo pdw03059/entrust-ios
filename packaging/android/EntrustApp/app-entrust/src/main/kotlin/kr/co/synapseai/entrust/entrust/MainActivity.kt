@@ -3,6 +3,7 @@ package kr.co.synapseai.entrust.entrust
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.fragment.app.FragmentActivity
 import kr.co.synapseai.entrust.ui.EntrustTheme
@@ -13,6 +14,8 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 캡처 · 화면 녹화 · 화면 공유 · 최근 앱 미리보기에서 이 앱 화면을 까맣게(입장 QR을 실시간으로 넘기는 것을 막음)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         model = AppModel(this)
         // 화면을 다시 만들 때(회전 등)는 같은 주소를 두 번 받지 않는다
         if (savedInstanceState == null) handle(intent)
