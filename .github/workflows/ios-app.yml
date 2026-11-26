@@ -14,8 +14,8 @@ permissions:
   contents: read
 jobs:
   build:
-    # macos-14 이미지는 2026-11-02 GitHub 에서 폐기됨(작업이 즉시 취소) → 최신 macOS 이미지 사용
-    runs-on: macos-26
+    # macos-14 는 2026-11-02 폐기, arm64 맥(macos-15·26)은 GitHub 용량 부족으로 배정 실패(2026-11-25) → 인텔 맥
+    runs-on: macos-15-intel
     timeout-minutes: 40
     defaults:
       run:
