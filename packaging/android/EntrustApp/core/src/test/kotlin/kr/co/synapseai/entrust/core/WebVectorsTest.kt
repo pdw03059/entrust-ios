@@ -25,7 +25,7 @@ class WebVectorsTest {
         val el2 = Entrust.lockQr(tk, device.publicRaw65)
         val eq2 = EntrySession.open(t.ck, device, now - 2).entryQr(t.ck, now)
         val o = buildJsonObject {
-            put("now", now); put("ck", t.ck); put("es1", Entrust.shopQr("티콧24", shop.publicRaw65)); put("et1", et1); put("el2", el2); put("eq2", eq2)
+            put("now", now); put("ck", t.ck); put("es1", Entrust.shopQr("티켓24", shop.publicRaw65)); put("et1", et1); put("el2", el2); put("eq2", eq2)
             put("ec1", Entrust.cancelNotice(t.ck, shop)); put("shopPk", B64U.encode(shop.publicRaw65))
         }
         File(out).writeText(o.toString())

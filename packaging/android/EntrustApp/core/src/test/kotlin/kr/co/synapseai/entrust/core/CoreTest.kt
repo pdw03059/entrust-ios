@@ -15,7 +15,7 @@ class CoreTest {
     private fun terms(ck: String = "tk_" + Entrust.randomB64(16), gate: String = "1", from: Long = now - 60, to: Long = now + 3600) =
         Terms(ck, "T24-0001", "체험 공연 · ENTRUST 시연", "서울보증보험 본사", "A-3,A-4", gate, 2, 37.5714, 127.0017, 200.0, from, to, Entrust.shopId(shop.publicRaw65))
 
-    private fun shopMap() = Gate.parseShopQr(Entrust.shopQr("티콧24", shop.publicRaw65))!!.let { mapOf(it.id to it) }
+    private fun shopMap() = Gate.parseShopQr(Entrust.shopQr("티켓24", shop.publicRaw65))!!.let { mapOf(it.id to it) }
 
     @Test fun base45RoundTrip() {
         for (n in 0..40) {

@@ -31,23 +31,36 @@ jobs:
           gradle-version: '8.14.3'
       - name: 공통 형식 · 검표 시험(core)
         run: gradle :core:test --console=plain
-      - name: 서명 열쇠 준비(비밀값이 있을 때만)
+      - name: 서명 열쇠 준비
         env:
           KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KS_PASS }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
         run: |
+          KS="$RUNNER_TEMP/entrust.jks"
           if [ -n "$KS_B64" ]; then
-            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/entrust.jks"
-            echo "ENTRUST_KEYSTORE=$RUNNER_TEMP/entrust.jks" >> "$GITHUB_ENV"
-            echo "정식 체험 열쇠로 서명합니다"
+            echo "$KS_B64" | base64 -d > "$KS"
+            { echo "ENTRUST_KS_PASS=$KS_PASS"; echo "ENTRUST_KEY_ALIAS=$KEY_ALIAS"; echo "ENTRUST_KEY_PASS=$KEY_PASS"; } >> "$GITHUB_ENV"
+            echo "저장소 비밀값의 열쇠로 서명합니다"
           else
-            echo "::notice::비밀값이 없어 시험용 열쇠로 서명합니다(새 판 설치 전 이전 앱 삭제 필요)"
+            # 비밀값이 없으면 이번 실행에서만 쓰는 시험용 열쇠(실행마다 바뀜 → 새 판 설치 전 이전 앱 삭제)
+            P=$(openssl rand -hex 16); echo "::add-mask::$P"
+            keytool -genkeypair -keystore "$KS" -storetype PKCS12 -storepass "$P" -keypass "$P" -alias entrust-demo \
+              -keyalg EC -groupname secp256r1 -sigalg SHA256withECDSA -validity 3650 -dname "CN=ENTRUST demo, O=SYNAPSE" >/dev/null
+            { echo "ENTRUST_KS_PASS=$P"; echo "ENTRUST_KEY_ALIAS=entrust-demo"; echo "ENTRUST_KEY_PASS=$P"; } >> "$GITHUB_ENV"
+            echo "::notice::비밀값이 없어 이번 실행 전용 시험 열쇠로 서명합니다(새 판 설치 전 이전 앱 삭제 필요)"
           fi
+          echo "ENTRUST_KEYSTORE=$KS" >> "$GITHUB_ENV"
       - name: 빌드(APK 3개)
-        env:
-          ENTRUST_KS_PASS: ${{ secrets.ANDROID_KS_PASS }}
-          ENTRUST_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ENTRUST_KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
-        run: gradle assembleRelease --console=plain
+        run: |
+          set -o pipefail
+          gradle assembleRelease --continue --console=plain 2>&1 | tee "$RUNNER_TEMP/build.log" || {
+            # 컴파일 오류를 실행 화면 위 'Annotations' 에 바로 보이게
+            grep -E "^e: " "$RUNNER_TEMP/build.log" | head -40 | sed -E 's#^e: file://[^ ]*/EntrustApp/#::error::#'
+            grep -A3 "What went wrong" "$RUNNER_TEMP/build.log" | head -8 | sed 's/^/::error::/'
+            exit 1
+          }
       - name: 이름 붙여 모으기 · 서명 확인
         run: |
           mkdir -p out
