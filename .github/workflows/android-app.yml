@@ -64,11 +64,13 @@ jobs:
       - name: 이름 붙여 모으기 · 서명 확인
         run: |
           mkdir -p out
-          cp app-entrust/build/outputs/apk/release/app-entrust-release.apk out/ENTRUST.apk
-          cp app-ticket24/build/outputs/apk/release/app-ticket24-release.apk out/Ticket24.apk
-          cp app-admin/build/outputs/apk/release/app-admin-release.apk out/EntrustAdmin.apk
+          for m in entrust:ENTRUST ticket24:Ticket24 admin:EntrustAdmin; do
+            d="app-${m%%:*}/build/outputs/apk/release"; ls -la "$d"
+            f=$(ls "$d"/*.apk | head -1)
+            cp "$f" "out/${m##*:}.apk"
+          done
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
-          for f in out/*.apk; do echo "== $f"; "$BT/apksigner" verify --print-certs "$f" | grep -E "Signer #1 certificate (DN|SHA-256)"; done
+          for f in out/*.apk; do echo "== $f"; "$BT/apksigner" verify --print-certs "$f" | head -4; done
           ls -la out
       - uses: actions/upload-artifact@v4
         with:
