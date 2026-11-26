@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ENTRUST 관리자 아이콘 앞면: 흰 표(좌우 홈 · 절취선) + 위치 핀(make_icon.py admin 모양). 66dp 안전 영역 안. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M31.6,32.8H76.4A5.6,5.6 0,0 1,82,38.4V69.6A5.6,5.6 0,0 1,76.4,75.2H31.6A5.6,5.6 0,0 1,26,69.6V38.4A5.6,5.6 0,0 1,31.6,32.8Z" />
+    <path android:fillColor="#FF14171C"
+        android:pathData="M21.6,54A4.4,4.4 0,1 0,30.4,54A4.4,4.4 0,1 0,21.6,54Z M77.6,54A4.4,4.4 0,1 0,86.4,54A4.4,4.4 0,1 0,77.6,54Z" />
+    <path android:fillColor="#FF14171C"
+        android:pathData="M64.1,36.8H65.3V39.2H64.1Z M64.1,41.4H65.3V43.8H64.1Z M64.1,46.0H65.3V48.4H64.1Z M64.1,50.6H65.3V53.0H64.1Z M64.1,55.2H65.3V57.6H64.1Z M64.1,59.8H65.3V62.2H64.1Z M64.1,64.4H65.3V66.8H64.1Z M64.1,69.0H65.3V71.2H64.1Z" />
+    <path android:fillColor="#FF14171C"
+        android:pathData="M35.8,49.8A9.2,9.2 0,1 0,54.2,49.8A9.2,9.2 0,1 0,35.8,49.8Z" />
+    <path android:fillColor="#FF14171C"
+        android:pathData="M36.32,51L53.68,51L45,65Z" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M41.4,49.8A3.6,3.6 0,1 0,48.6,49.8A3.6,3.6 0,1 0,41.4,49.8Z" />
+</vector>
