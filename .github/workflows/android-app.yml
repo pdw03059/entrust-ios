@@ -1,5 +1,5 @@
 # ENTRUST 안드로이드 체험 앱 3개(.apk) 만들기 — GitHub 리눅스 실행기에서 빌드.
-#   ENTRUST(관객) · 티콧24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표)
+#   ENTRUST(관객) · 티켓24(가상 예매처) · ENTRUST 관리자(공연 장소 · 시간 설정 + 검표)
 # 결과물: 이 실행 화면 아래 'Artifacts' 의 EntrustApps-apk → 안드로이드 폰에서 파일을 눌러 설치.
 # 서명: 저장소 비밀값 ANDROID_KEYSTORE_B64 · ANDROID_KS_PASS · ANDROID_KEY_ALIAS · ANDROID_KEY_PASS 가 있으면 그 열쇠,
 #       없으면 실행할 때마다 새로 생기는 시험용(debug) 열쇠 → 이때는 새 판을 깔기 전에 이전 앱을 지워야 함.

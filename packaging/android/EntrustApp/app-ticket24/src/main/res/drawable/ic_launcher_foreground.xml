@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 티켓24 아이콘 앞면: 흰 표(좌우 반원 홈 · 절취선) + 고리 · 막대(아이폰 make_icon.py 의 ticket24 와 같은 모양, 1024px → 108 단위) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 원형 마스크에서도 모서리가 잘리지 않게 가운데 66dp 안으로 줄임 -->
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="0.9" android:scaleY="0.9">
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M30.38,31.64H77.62A5.91,5.91 0,0 1,83.53,37.55V49.36A4.64,4.64 0,0 0,83.53,58.64V70.45A5.91,5.91 0,0 1,77.62,76.36H30.38A5.91,5.91 0,0 1,24.47,70.45V58.64A4.64,4.64 0,0 0,24.47,49.36V37.55A5.91,5.91 0,0 1,30.38,31.64ZM32.70,54.0A9.49,9.49 0,1 0,51.68,54.0A9.49,9.49 0,1 0,32.70,54.0ZM36.92,54.0A5.27,5.27 0,1 0,47.46,54.0A5.27,5.27 0,1 0,36.92,54.0ZM71.72,40.08H75.94V67.92H71.72ZM64.65,35.86H65.92V38.39H64.65ZM64.65,40.71H65.92V43.24H64.65ZM64.65,45.56H65.92V48.09H64.65ZM64.65,50.41H65.92V52.95H64.65ZM64.65,55.27H65.92V57.8H64.65ZM64.65,60.12H65.92V62.65H64.65ZM64.65,64.97H65.92V67.5H64.65ZM64.65,69.82H65.92V72.14H64.65Z" />
+    </group>
+</vector>
